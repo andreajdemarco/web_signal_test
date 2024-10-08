@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legendary Running Products</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .product {
+            border: 1px solid #ccc;
+            margin: 15px 0;
+            padding: 15px;
+        }
+        .buttons {
+            margin-top: 10px;
+        }
+        .hidden {
+            display: none;
+        }
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            visibility: hidden;
+        }
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .modal.show {
+            visibility: visible;
+        }
+    </style>
+</head>
+<body>
+    <h1>Legendary Running Products</h1>
+    <div class="product" data-product-id="1">
+        <h2>Polar H10 Heart Rate Monitor</h2>
+        <p>£60</p>
+        <div class="buttons">
+            <button onclick="openModal(1)">Open Product</button>
+            <button onclick="addToCart(1, 'Polar H10 Heart Rate Monitor', 60)">Add To Cart</button>
+        </div>
+    </div>
+    <div class="product" data-product-id="2">
+        <h2>Garmin Fenix 8 Smartwatch</h2>
+        <p>£700</p>
+        <div class="buttons">
+            <button onclick="openModal(2)">Open Product</button>
+            <button onclick="addToCart(2, 'Garmin Fenix 8 Smartwatch', 700)">Add To Cart</button>
+        </div>
+    </div>
+    <div class="product" data-product-id="3">
+        <h2>Nike Alphaflys 3</h2>
+        <p>£300</p>
+        <div class="buttons">
+            <button onclick="openModal(3)">Open Product</button>
+            <button onclick="addToCart(3, 'Nike Alphaflys 3', 300)">Add To Cart</button>
+        </div>
+    </div>
+    <h2>Cart</h2>
+    <div id="cart">
+        <p>No items in cart.</p>
+    </div>
+    <button onclick="startCheckout()">Start Checkout</button>
+    <!-- Product Modal -->
+    <div id="product-modal" class="modal" onclick="closeModal(event)">
+        <div class="modal-content">
+            <h2 id="modal-title">Product Details</h2>
+            <p id="modal-price"></p>
+            <button onclick="closeModal()">Close</button>
+        </div>
+    </div>
+    <!-- Checkout Modal -->
+    <div id="checkout-modal" class="modal" onclick="closeModal(event)">
+        <div class="modal-content">
+            <h2>Confirm Purchase</h2>
+            <p id="cart-total-p">Total: £ </p>
+            <button onclick="completePayment()">Complete Payment</button>
+            <button onclick="closeModal()">Cancel</button>
+        </div>
+    </div>
+    <script>
+        let cart = [];
+        let cart_total = 0;
+
+        function openModal(productId) {
+            const product = document.querySelector(`.product[data-product-id="${productId}"]`);
+            const title = product.querySelector('h2').innerText;
+            const price = product.querySelector('p').innerText;
+
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-price').innerText = price;
+
+            const modal = document.getElementById('product-modal');
+            modal.classList.add('show');
+        }
+
+        function closeModal(event) {
+            if (event && event.target.classList.contains('modal-content')) {
+                return;
+            }
+            document.getElementById('product-modal').classList.remove('show');
+            document.getElementById('checkout-modal').classList.remove('show');
+        }
+
+        function addToCart(id, name, price) {
+            cart.push({ id, name, price });
+            updateCart();
+        }
+
+        function updateCart() {
+            const cartDiv = document.getElementById('cart');
+            if (cart.length === 0) {
+                cartDiv.innerHTML = '<p>No items in cart.</p>';
+                return;
+            }
+            cartDiv.innerHTML = cart.map(item => `<p>${item.name} - $${item.price}</p>`).join('');
+            const cart_total_p = document.getElementById('cart-total-p');
+            cart_total = cart.reduce((n, {price}) => n + price, 0);
+            cart_total_p.innerHTML = `<p>Total: £ ${cart_total}</p>`;
+        }
+
+        function startCheckout() {
+            if (cart.length === 0) {
+                alert('Cart is empty');
+                return;
+            }
+            const modal = document.getElementById('checkout-modal');
+            modal.classList.add('show');
+        }
+
+        function completePayment() {
+            alert('Congratulations! You are now ready to become a LEGENDARY runner');
+            location.reload();
+        }
+    </script>
+</body>
+</html>
